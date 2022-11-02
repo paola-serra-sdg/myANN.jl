@@ -3,6 +3,11 @@ uuid = "a174818e-0ba8-430d-b07a-b623d3f21bc9"
 authors = ["Paola-Serra"]
 version = "0.1.0"
 
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+MLDatasets = "eb30cadb-4394-5ae3-aed4-317e484a6458"
+
 [compat]
 julia = "1"
 

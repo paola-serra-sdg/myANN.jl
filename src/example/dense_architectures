@@ -1,0 +1,30 @@
+using MLDatasets
+using BenchmarkTools
+using Flux
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
+
+
+train_x, train_y = MLDatasets.MNIST.traindata(Float32)
+test_x, test_y = MLDatasets.MNIST.testdata(Float32)
+
+train_y, test_y = onehotbatch(train_y, 0:9), onehotbatch(test_y, 0:9)
+
+train_data = [(train_x, train_y)]
+test_data = [(test_x, test_y)]
+
+
+model = Chain(
+        flatten,
+        Dense(28^2, 32, relu),
+        Dropout(0.2),
+        Dense(32, 10)
+)
+params = Flux.params(model)
+
+optimiser = ADAM()
+loss(x,y) = logitcrossentropy(model(x), y)
+
+evalcb = () -> @show(loss(train_x, train_y))
+
+num_epochs = 10
+@epochs num_epochs train!(loss, params, train_data, optimiser, cb = throttle(evalcb, 5))
