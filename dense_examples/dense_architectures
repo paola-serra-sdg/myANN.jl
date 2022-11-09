@@ -13,6 +13,7 @@ train_data = [(train_x, train_y)]
 test_data = [(test_x, test_y)]
 
 
+# Dense layer: (in::Integer, out::Integer, σ = identity)
 model = Chain(
         flatten,
         Dense(28^2, 32, relu),
