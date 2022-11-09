@@ -10,7 +10,7 @@ Image data should be stored in WHCN order (width, height, channels, batch).
 - **Softmax** *(softmax(x; dims = 1))* : turns input array x into probability distributions that sum to 1 along the dimensions specified by dims:
 *softmax(x; dims = 1) = exp.(x) ./ sum(exp.(x), dims = dims)*
 
-# Detailed explanation:
+## Generic explanation of the architecture
 **Layer 1**
 *Conv((3, 3), 1=>16, pad=(1,1), relu)*
 
@@ -77,3 +77,5 @@ Our final training layer takes the input of 288 and outputs a size of 10x128.
 *softmax*
 
 Outputs probabilities between 0 and 1 of which digit the model has predicted.
+
+## About our data
