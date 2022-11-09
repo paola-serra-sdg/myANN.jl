@@ -6,6 +6,6 @@
 
 
 ## TODOs:
-- [] Download a new dataset from: https://www.kaggle.com/datasets/prasunroy/natural-images or something else.
-- [] Implement recurrent neural network
-- [] Write a reasonable documentation of the architectures
+- [ ] Download a new dataset from: https://www.kaggle.com/datasets/prasunroy/natural-images or something else.
+- [ ] Implement recurrent neural network
+- [ ] Write a reasonable documentation of the architectures
