@@ -29,6 +29,7 @@ size(img)
 labels= ["dog","cat"]
 
 train, test = TrainTestSplit(df,0.7)
+#--------------PARTE NUOVA FINISCE QUI
 #da rivedere questo è in python
 #x_data =[]
 #y_data = []
