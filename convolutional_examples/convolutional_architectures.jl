@@ -1,47 +1,77 @@
 using MLDatasets
-using BenchmarkTools
-using Flux
+using Flux 
 using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
+using Statistics: mean, std
 
 
-train_x, train_y = MLDatasets.MNIST.traindata(Float32)
-test_x, test_y = MLDatasets.MNIST.testdata(Float32)
+function get_data(path)
+    dirs= readdir(path; join = true)
+    images =[]
+    labels=[]
 
-train_y, test_y = onehotbatch(train_y, 0:9), onehotbatch(test_y, 0:9)
+    for dir in dirs
+        els= readdir(dir; join= true)
+        imgs = load.(els)
+        if  occursin("bee",dir)
+            labs= zeros(length(els)) 
+        else 
+            labs= ones(length(els))
+        end
+        push!(labels,labs)
+        push!(images,imgs)
+    end
+    
+    
+    images= Flux.unsqueeze(cat(images..., dims= 3), 3)
+    images= standardize(images)
+    labels=cat(labels..., dims= 1)
+    
+    return images, labels
+end
 
-train_data = [(train_x, train_y)]
-test_data = [(test_x, test_y)]
+
+function standardize(images)
+    m= mean(images,dims= (1,2))
+    s= std(images,dims=(1,2))
+    st_imgs= (images.-m)/s
+
+end
+
+function split_traintest(images,labels,ratio=0.7)
+    ind = Int(ratio*length(images))
+    train_x = images[:,:,:,1:ind]
+    train_y = labels[1:ind]
+    test_x = images[:,:,:,ind:length(images)]
+    test_y = labels[ind:length(labels)]
+end
 
 
-# We will use a simple convolutional architecture withthree iterations of Conv -> ReLU -> MaxPool, 
-# followed by a final Dense layer that feeds into a softmax probability output.
+
+
+
+
+train_loader = DataLoader((x_train, y_train))
+
+
+
 model = Chain(
-    # First convolution, operating upon a 28x28 image
-    Conv((3, 3), 1=>16, pad=(1,1), relu),
-    x -> maxpool(x, (2,2)),
+        Conv((3, 3), 1=>32, pad=(1,1), relu),
+        MaxPool((2,2)),
+        Conv((3, 3), 32=>64, pad=(1,1), relu),
+        MaxPool((2,2)),
+        Conv((3, 3), 64=>128, pad=(1,1), relu),
+        MaxPool((2,2)),
+        flatten,
+        Dense(1152, 2),
+        softmax)
 
-    # Second convolution, operating upon a 14x14 image
-    Conv((3, 3), 16=>32, pad=(1,1), relu),
-    x -> maxpool(x, (2,2)),
 
-    # Third convolution, operating upon a 7x7 image
-    Conv((3, 3), 32=>32, pad=(1,1), relu),
-    x -> maxpool(x, (2,2)),
-
-    # Reshape 3d tensor into a 2d one, at this point it should be (3, 3, 32, N)
-    # which is where we get the 288 in the `Dense` layer below:
-    x -> reshape(x, :, size(x, 4)),
-    Dense(288, 10),
-
-    # Finally, softmax to get nice probabilities
-    softmax,
-)
 params = Flux.params(model)
 
 optimiser = ADAM()
 loss(x,y) = logitcrossentropy(model(x), y)
 
-evalcb = () -> @show(loss(train_x, train_y))
+evalcb = () -> @show(loss(x_train, y_train))
 
 num_epochs = 10
-@epochs num_epochs train!(loss, params, train_data, optimiser, cb = throttle(evalcb, 5))
+@epochs num_epochs train!(loss, params, train_loader, optimiser, cb = throttle(evalcb, 5))
