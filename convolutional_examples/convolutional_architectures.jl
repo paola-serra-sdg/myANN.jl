@@ -4,40 +4,45 @@ using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, 
 using Statistics: mean, std
 
 
-function get_data(path)
-    dirs= readdir(path; join = true)
-    images =[]
-    labels=[]
+function get_data(path::String)
+    dirs = readdir(path; join=true)
+    images = []
+    labels = []
 
     for dir in dirs
-        els= readdir(dir; join= true)
+        els = readdir(dir; join=true)
         imgs = load.(els)
-        if  occursin("bee",dir)
-            labs= zeros(length(els)) 
+        if occursin("bee", dir)
+            labs = zeros(length(els))
         else 
-            labs= ones(length(els))
+            labs = ones(length(els))
         end
         push!(labels,labs)
         push!(images,imgs)
     end
     
+    # Put all images in a vector and add channel dimension
+    images = Flux.unsqueeze(cat(images..., dims=3), 3)
     
-    images= Flux.unsqueeze(cat(images..., dims= 3), 3)
-    images= standardize(images)
-    labels=cat(labels..., dims= 1)
+    # Standardize images
+    images = standardize(images)
+
+    # All labels in a vector
+    labels = cat(labels..., dims=1)
     
     return images, labels
-end
-
-
-function standardize(images)
-    m= mean(images,dims= (1,2))
-    s= std(images,dims=(1,2))
-    st_imgs= (images.-m)/s
 
 end
 
-function split_traintest(images,labels,ratio=0.7)
+
+function standardize(images::Matrix)
+    m = mean(images, dims=(1,2))
+    s = std(images, dims=(1,2))
+    st_imgs = (images.-m)/s
+    return st_imgs
+end
+
+function split_train_test(images::Matrix, labels::Array, ratio=0.7)
     ind = Int(ratio*length(images))
     train_x = images[:,:,:,1:ind]
     train_y = labels[1:ind]
@@ -45,13 +50,10 @@ function split_traintest(images,labels,ratio=0.7)
     test_y = labels[ind:length(labels)]
 end
 
-
-
-
+images, labels = get_data("preprocessed_data")
 
 
 train_loader = DataLoader((x_train, y_train))
-
 
 
 model = Chain(
