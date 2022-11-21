@@ -2,6 +2,8 @@ using MLDatasets
 using Flux 
 using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using Statistics: mean, std
+using Images
+using ImageMagick
 
 
 function get_data(path::String)
@@ -17,6 +19,7 @@ function get_data(path::String)
         else 
             labs = ones(length(els))
         end
+        imgs = cat(imgs..., dims=3)
         push!(labels,labs)
         push!(images,imgs)
     end
@@ -29,29 +32,33 @@ function get_data(path::String)
 
     # All labels in a vector
     labels = cat(labels..., dims=1)
-    
+
     return images, labels
 
 end
 
 
-function standardize(images::Matrix)
+function standardize(images::Array)
+    Float64.(images)
     m = mean(images, dims=(1,2))
     s = std(images, dims=(1,2))
     st_imgs = (images.-m)/s
     return st_imgs
 end
 
-function split_train_test(images::Matrix, labels::Array, ratio=0.7)
+function split_train_test(images::Array, labels::Array, ratio=0.7)
     ind = Int(ratio*length(images))
     train_x = images[:,:,:,1:ind]
     train_y = labels[1:ind]
     test_x = images[:,:,:,ind:length(images)]
     test_y = labels[ind:length(labels)]
+    return train_x, train_y, test_x, test_y
 end
+
 
 images, labels = get_data("preprocessed_data")
 
+x_train, y_train, x_test, y_test = split_train_test(images, labels)
 
 train_loader = DataLoader((x_train, y_train))
 
