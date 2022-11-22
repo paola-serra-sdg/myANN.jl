@@ -9,8 +9,8 @@
 - [x] Download a new dataset (bees and wasps)
 - [x] Do preprocessing (resize and grayify) and make data usable for our models
 - [x] Work with convolutional and dense network
-- [] Recurrent network (difficult)
-- [] Work with modules (ask to Pietro) (how can I include another script in my main?)
+- [ ] Recurrent network (difficult)
+- [ ] Work with modules (ask to Pietro) (how can I include another script in my main?)
 
 
 
