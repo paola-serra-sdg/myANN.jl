@@ -24,7 +24,7 @@ function process_images(directory, width::Int64, height::Int64)
     map(x -> resize_and_grayify(directory, x, width, height), files_list)
 end
 
-n_resolution = 90
+n_resolution = 30
 
 
 process_images("data/bee1", n_resolution, n_resolution);
@@ -41,3 +41,5 @@ bees1 = load.("preprocessed_data/bee1/" .* bee1_dir);
 bees2 = load.("preprocessed_data/bee2/" .* bee2_dir);
 wasp1 = load.("preprocessed_data/wasp1/" .* wasp1_dir);
 wasp2 = load.("preprocessed_data/wasp2/" .* wasp2_dir);
+
+
