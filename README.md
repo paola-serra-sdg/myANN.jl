@@ -6,6 +6,15 @@
 
 
 ## TODOs:
-- [ ] Download a new dataset from: https://www.kaggle.com/datasets/prasunroy/natural-images or something else.
-- [ ] Implement recurrent neural network
-- [ ] Write a reasonable documentation of the architectures
+- [x] Download a new dataset (bees and wasps)
+- [x] Do preprocessing (resize and grayify) and make data usable for our models
+- [x] Work with convolutional and dense network
+- [ ] Recurrent network (difficult)
+- [ ] Work with modules (ask to Pietro) (how can I include another script in my main?)
+
+
+
+**Preprocessing**
+
+We have firstly change the channels of the images (from tot to 1, then we have greyscale images) and then we resize them to a different resolution (fewer then before).
+
