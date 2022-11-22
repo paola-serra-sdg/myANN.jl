@@ -14,3 +14,7 @@
 
 
 
+**Preprocessing**
+
+We have firstly change the channels of the images (from tot to 1, then we have greyscale images) and then we resize them to a different resolution (fewer then before).
+
