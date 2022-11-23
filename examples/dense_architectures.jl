@@ -1,5 +1,3 @@
-using MLDatasets
-using Flux 
 using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, onehotbatch
 using Statistics: mean, std
 using Images
@@ -9,17 +7,18 @@ using myANN
 # COME FACCIO A FARE IL MODULE????
 
 
-images, labels = get_data("preprocessed_data")
+images, labels = get_data("preprocessed_data");
 
-x_train, y_train, x_test, y_test = split_train_test(images, labels)
+x_train, y_train, x_test, y_test = split_train_test(images, labels);
 
-data = DataLoader((x_train, y_train))
+data = DataLoader((x_train, y_train));
 
 # Perchè va anche con la dimensione dei canali?
 model = Chain(
         flatten,
-        Dense(900, 128, relu),
-        Dense(128, 32),
+        Dense(3600, 128, relu),
+        Dense(128, 64, relu),
+        Dense(64, 32, relu),
         Dense(32, 2)
 )
 

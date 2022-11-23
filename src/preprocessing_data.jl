@@ -24,7 +24,7 @@ function process_images(directory, width::Int64, height::Int64)
     map(x -> resize_and_grayify(directory, x, width, height), files_list)
 end
 
-n_resolution = 30
+n_resolution = 60
 
 
 process_images("data/bee1", n_resolution, n_resolution);

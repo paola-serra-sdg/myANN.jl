@@ -1,11 +1,10 @@
 using MLDatasets
 using Flux 
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, onehotbatch
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using Statistics: mean, std
 using Images
 using ImageMagick
 using Flux.Data: DataLoader
-
 
 function get_data(path::String)
     dirs = readdir(path; join=true)
@@ -59,18 +58,18 @@ function split_train_test(images::Array, labels::Any, ratio=0.7)
 end
 
 
-images, labels = get_data("preprocessed_data")
+images, labels = get_data("preprocessed_data");
 
 
-x_train, y_train, x_test, y_test = split_train_test(images, labels)
+x_train, y_train, x_test, y_test = split_train_test(images, labels);
 
-data = DataLoader((x_train, y_train))
+data = DataLoader((x_train, y_train));
 
 model = Chain(
         Conv((3, 3), 1=>32, pad=(1,1), relu),
         MaxPool((2,2)),
         flatten,
-        Dense(7200, 2),
+        Dense(28800, 2),
         softmax)
 
 

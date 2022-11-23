@@ -1,6 +1,6 @@
 using MLDatasets
 using Flux 
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, onehotbatch
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using Statistics: mean, std
 using Images
 using ImageMagick
