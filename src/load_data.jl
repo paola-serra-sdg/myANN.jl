@@ -33,9 +33,9 @@ function get_data(path::String)
     labels = cat(labels..., dims=1)
 
     # I need a onehot vector to pass the labels to the model
-    labels = onehotbatch(labels, 0:1)
+    onehot_labels = onehotbatch(labels, 0:1)
 
-    return images, labels
+    return images, onehot_labels, labels
 
 end
 
@@ -48,7 +48,7 @@ function standardize(images::Array)
 end
 
 # Split the data in train and test set
-function split_train_test(images::Array, labels::Any, ratio=0.7)
+function split_train_test(images::Array, labels::Any, ratio=0.5)
     ind = trunc(Int, ratio*(size(images)[4]))
     train_x = images[:,:,:,1:ind]
     train_y = labels[:,1:ind]
