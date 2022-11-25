@@ -1,20 +1,18 @@
 using Flux: onehotbatch
 using Statistics: mean, std
 
-# Take as input the path in which the data are stored and create a vector of images of size (length, width, n_channels, n_images)
+
 function get_data(path::String)
     dirs = readdir(path; join=true)
     images = []
     labels = []
+    i = 0
 
     for dir in dirs
         els = readdir(dir; join=true)
         imgs = load.(els)
-        if occursin("bee", dir)
-            labs = zeros(length(els))
-        else 
-            labs = ones(length(els))
-        end
+        labs = repeat([i], length(els))
+        i = i+1
         imgs = cat(imgs..., dims=3)
         push!(labels,labs)
         push!(images,imgs)
@@ -33,9 +31,9 @@ function get_data(path::String)
     labels = cat(labels..., dims=1)
 
     # I need a onehot vector to pass the labels to the model
-    onehot_labels = onehotbatch(labels, 0:1)
+    labels = onehotbatch(labels, 0:(length(dirs)-1))
 
-    return images, onehot_labels, labels
+    return images, labels
 
 end
 

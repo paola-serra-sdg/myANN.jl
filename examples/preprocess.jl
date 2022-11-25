@@ -1,6 +1,6 @@
 using myANN
 
-n_resolution = 60
+n_resolution = 20
 
 
 process_images("data/bee1", n_resolution, n_resolution);
