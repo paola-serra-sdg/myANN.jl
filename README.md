@@ -9,8 +9,9 @@
 - [x] Download a new dataset (bees and wasps)
 - [x] Do preprocessing (resize and grayify) and make data usable for our models
 - [x] Work with convolutional and dense network
-- [ ] Recurrent network (difficult)
-- [ ] Work with modules (ask to Pietro) (how can I include another script in my main?)
+- [ ] Plot train loss function and accuracy
+- [ ] Change datatypes in some more general (ex: string -> abstractstring)
+- [ ] Make get_data more usable in general (changing the repository parameters)
 
 
 
@@ -23,7 +24,6 @@ Then we have stores the images in an array of dimension (length, width, n_channe
 The architectures that we have decided to use are:
 - Dense neural network
 - Convolutional neural network
-- Recurrent neural network (?)
 
 Every model is stored in a different file and data are loading in the same way for dense and convolutional neural network.
 
