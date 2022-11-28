@@ -26,7 +26,5 @@ The architectures that we have decided to use are:
 - Dense neural network
 - Convolutional neural network
 
-Every model is stored in a different file and data are loading in the same way for dense and convolutional neural network.
-
 
 
