@@ -1,7 +1,6 @@
 using Flux: onecold
 
-# Accuracy metric
-# Todo: modify to work with more than two labels
+# Accuracy
 
 function accuracy(y_true::Any, y_pred::Any)
     s = 0
