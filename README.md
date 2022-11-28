@@ -5,7 +5,8 @@
 # Brief examples on how to implement simple neural networks with Flux
 
 
-## TODOs:
+**TODOs:**
+
 - [x] Download a new dataset (bees and wasps)
 - [x] Do preprocessing (resize and grayify) and make data usable for our models
 - [x] Work with convolutional and dense network
