@@ -12,7 +12,7 @@
 - [x] Plot train loss function and accuracy
 - [x] Change datatypes in some more general (ex: string -> abstractstring)
 - [x] Make get_data more usable in general (changing the repository parameters)
-- [ ] Change accuracy to work with more then 2 labels
+- [x] Change accuracy to work with more then 2 labels
 
 
 
