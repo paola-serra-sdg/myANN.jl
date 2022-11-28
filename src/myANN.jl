@@ -7,10 +7,10 @@ using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, 
 using Images
 using Flux.Data: DataLoader
 
-export get_data, split_train_test, standardize, process_images
+export get_data, split_train_test, standardize, process_images, accuracy
 
 include("load_data.jl")
+include("metrics.jl")
 include("preprocessing_data.jl")
-
 
 end

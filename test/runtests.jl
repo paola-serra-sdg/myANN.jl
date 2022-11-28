@@ -13,4 +13,7 @@ using Flux: onehotbatch
     e = onehotbatch((0,0,0,0,0), 0:1)
     f = onehotbatch((1,1,1,1,1), 0:1)
     @test accuracy(e,f) == 0
+    g = onehotbatch((0,1,3,2,0), 0:3)
+    h = onehotbatch((0,1,2,1,3), 0:3)
+    @test accuracy(g,h) == 0.4
 end

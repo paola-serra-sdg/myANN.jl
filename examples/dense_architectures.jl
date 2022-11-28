@@ -1,5 +1,5 @@
 using Flux
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, onehotbatch, loadmodel!
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, loadmodel!
 using Statistics: mean, std
 using Images
 using Flux.Data: DataLoader
@@ -7,7 +7,7 @@ using myANN
 using Plots
 
 
-images, labels = get_data("preprocessed_data");
+images, labels, cold_labels = get_data("preprocessed_data");
 
 x_train, y_train, x_test, y_test = split_train_test(images, labels);
 
@@ -31,26 +31,11 @@ params = Flux.params(model)
 optimiser = ADAM(0.01)
 loss(x,y) = logitcrossentropy(model(x), y)
 
-# non funziona se uso più di due labels
-function accuracy(y_true::Any, y_pred::Any)
-    s = 0
-    a = onecold(y_true, 0:1)
-    b = onecold(y_pred, 0:1)
-    for i in range(1, size(a)[1])
-        if a[i] == b[i]
-            s = s+1
-        end
-    end
-    return s/(size(a)[1])
-end
-
-
+# Training and plotting
 epochs = Int64[]
 loss_on_train = Float64[]
 loss_on_test = Float64[]
 acc = Float64[]
-
-
 
 for epoch in 1:20
     Flux.train!(loss, params, train_data, optimiser)
