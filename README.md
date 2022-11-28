@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/paola-serra-sdg/myANN.jl/actions/workflows/CI.yml/badge.svg?branch=master)](https://github.com/paola-serra-sdg/myANN.jl/actions/workflows/CI.yml?query=branch%3Amaster)
 
-# Brief examples on how to implement simple neural networks with Flux
+# Brief examples on how to implement simple neural networks using Flux
 
 
 **TODOs:**
