@@ -33,20 +33,20 @@ function get_data(path::String)
     # I need a onehot vector to pass the labels to the model
     labels = onehotbatch(cold_labels, 0:(length(dirs)-1))
 
-    return images, labels, cold_labels
+    return images, labels
 
 end
 
 # Standardize my data
 function standardize(images::Array)
     m = mean(images, dims=(1,2))
-    s = std(images, dims=(1,2))    
+    s = std(images, dims=(1,2))
     st_imgs = (images.-m)./s
     return st_imgs
 end
 
 # Split the data in train and test set
-function split_train_test(images::Array, labels::Any, ratio=0.7)
+function split_train_test(images::Array, labels::Flux.OneHotMatrix, ratio=0.7)
     ind = trunc(Int, ratio*(size(images)[4]))
     train_x = images[:,:,:,1:ind]
     train_y = labels[:,1:ind]

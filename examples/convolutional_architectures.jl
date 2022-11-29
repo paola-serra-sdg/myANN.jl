@@ -34,7 +34,7 @@ loss_on_train = Float64[]
 loss_on_test = Float64[]
 acc = Float64[]
 
-for epoch in 1:20
+for epoch in 1:10
     Flux.train!(loss, params, train_data, optimiser)
     # we record our training loss
     push!(epochs, epoch)
@@ -48,11 +48,13 @@ plot(epochs, loss_on_train, lab="Training", c=:black, lw=2);
 plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2);
 title!("Dense architecture");
 yaxis!("Loss", :log);
-xaxis!("Training epoch")
+xaxis!("Training epoch");
+savefig("conv_loss");
 
 plot(epochs, acc, lab="Training", c=:black, lw=2, ylims = (0,1));
 title!("Dense architecture");
 yaxis!("Accuracy", :log);
-xaxis!("Training epoch")
+xaxis!("Training epoch");
+savefig("conv_accuracy");
 
 
