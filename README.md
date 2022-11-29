@@ -19,9 +19,9 @@
 
 **Preprocessing**
 
-Firstly we have changed the channels of the images (greyscale images (only 1 channel)) and we have resized the images to a different resolution (fewer then before and the same for all).
+Firstly we have changed the channels of the images (greyscale images (only 1 channel)) and we have resized the images to a different resolution (fewer than before and the same for all).
 
-Then we have stores the images in an array of dimension (length, width, n_channels, n_images) and a vector of labels. Then we have standardize data to have better performance in our model and split the data in train and test set.
+Then we have stored the images in an array of dimension (length, width, n_channels, n_images) and a vector of labels. Then we have standardize data to have better performance in our model and split the data in train and test set.
 
 The architectures that we have decided to use are:
 - Dense neural network
