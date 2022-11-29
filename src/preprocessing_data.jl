@@ -1,6 +1,4 @@
 using MLDatasets
-using Flux 
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using DataFrames
 using Images
 using MLDataUtils

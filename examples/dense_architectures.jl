@@ -11,8 +11,9 @@ images, labels = get_data("preprocessed_data");
 
 x_train, y_train, x_test, y_test = split_train_test(images, labels);
 
-train_data = DataLoader((x_train, y_train));
-test_data = DataLoader((x_test, y_test));
+
+train_data = DataLoader((x_train, y_train, batchsize = 32, shuffle = true));
+test_data = DataLoader((x_test, y_test, batchsize = 32, shuffle = true));
 
 
 model = Chain(
@@ -37,8 +38,14 @@ loss_on_train = Float64[]
 loss_on_test = Float64[]
 acc = Float64[]
 
-for epoch in 1:10
+for epoch in 1:5
     Flux.train!(loss, params, train_data, optimiser)
+end
+
+w = Flux.params(model);
+Flux.loadparams!(model, w);
+
+for epoch in 1:5
     # we record our training loss
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
