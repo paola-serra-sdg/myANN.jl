@@ -1,21 +1,22 @@
 using Flux
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, loadmodel!
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, loadmodel!, loadparams!, params
 using Statistics: mean, std
 using Images
 using Flux.Data: DataLoader
 using myANN
 using Plots
 
-
+# Get our data
 images, labels = get_data("preprocessed_data");
 
+# Train and test splitting
 x_train, y_train, x_test, y_test = split_train_test(images, labels);
 
-
+# Loading
 train_data = DataLoader((x_train, y_train, batchsize = 32, shuffle = true));
 test_data = DataLoader((x_test, y_test, batchsize = 32, shuffle = true));
 
-
+# Dense architecture model
 model = Chain(
         flatten,
         Dense(900, 128, relu),
@@ -25,9 +26,10 @@ model = Chain(
         softmax
 )
 
+# Save our model on CPU
 model = cpu(model)
 
-params = Flux.params(model)
+params = params(model)
 
 optimiser = ADAM(0.01)
 loss(x,y) = logitcrossentropy(model(x), y)
@@ -39,21 +41,22 @@ loss_on_test = Float64[]
 acc = Float64[]
 
 for epoch in 1:5
-    Flux.train!(loss, params, train_data, optimiser)
+    train!(loss, params, train_data, optimiser)
 end
 
-w = Flux.params(model);
-Flux.loadparams!(model, w);
+# Extract and add new trained parameters
+new_params = params(model);
+loadparams!(model, new_params);
 
 for epoch in 1:5
-    # we record our training loss
+    # we record our training/test loss and accuracy
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
 end
 
-
+# Visualization
 plot(epochs, loss_on_train, lab="Training", c=:black, lw=2, ylims = (0.8,2));
 plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0.8,2));
 title!("Dense architecture");

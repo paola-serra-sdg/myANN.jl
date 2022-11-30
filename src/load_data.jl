@@ -1,4 +1,4 @@
-using Flux: onehotbatch
+using Flux: onehotbatch, OneHotMatrix
 using Statistics: mean, std
 
 
@@ -46,7 +46,7 @@ function standardize(images::Array)
 end
 
 # Split the data in train and test set
-function split_train_test(images::Array, labels::Flux.OneHotMatrix, ratio=0.7)
+function split_train_test(images::Array, labels::OneHotMatrix, ratio=0.7)
     ind = trunc(Int, ratio*(size(images)[4]))
     train_x = images[:,:,:,1:ind]
     train_y = labels[:,1:ind]
