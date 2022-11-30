@@ -14,6 +14,7 @@
 - [x] Change datatypes in some more general (ex: string -> abstractstring)
 - [x] Make get_data more usable in general (changing the repository parameters)
 - [x] Change accuracy to work with more than 2 labels
+- [x] Tests for accuracy (and something else?)
 
 
 
@@ -27,7 +28,7 @@ The architectures that we have decided to use are:
 - Dense neural network
 - Convolutional neural network
 
-**Plot**
+**Visualization**
 
 After training, we have plotted the loss function (with train and test data) and the accuracy (that we have implemented [here](./src/metrics.jl))
 
