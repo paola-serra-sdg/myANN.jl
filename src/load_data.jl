@@ -1,5 +1,6 @@
 using Flux: onehotbatch, OneHotMatrix
 using Statistics: mean, std
+using Random: shuffle, seed!
 
 
 function get_data(path::String)
@@ -47,6 +48,10 @@ end
 
 # Split the data in train and test set
 function split_train_test(images::Array, labels::OneHotMatrix, ratio=0.7)
+    seed!(1234)
+    perm = shuffle(1:size(images)[4])
+    images = images[:,:,:,perm]
+    labels = labels[:,perm]
     ind = trunc(Int, ratio*(size(images)[4]))
     train_x = images[:,:,:,1:ind]
     train_y = labels[:,1:ind]

@@ -3,7 +3,7 @@ module myANN
 using Statistics: mean, std
 using MLDatasets
 using Flux 
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, params, loadparams!
 using Images
 using Flux.Data: DataLoader
 
