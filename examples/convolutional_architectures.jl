@@ -1,5 +1,5 @@
 using Flux 
-using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten, loadparams!, params
+using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using Statistics: mean, std
 using Images
 using Flux.Data: DataLoader
@@ -37,18 +37,27 @@ epochs = Int64[]
 loss_on_train = Float64[]
 loss_on_test = Float64[]
 acc = Float64[]
+best_params = Float32[]
 
-for epoch in 1:5
-    train!(loss, params, train_data, optimiser)
+for epoch in 1:20
+    Flux.train!(loss, params, train_data, optimiser)
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
+    if epoch > 1
+        if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
+            best_params = params
+        end
+    end
 end
 
-new_params = Flux.params(model);
-loadparams!(model, new_params);
+# Extract and add new trained parameters
+if isempty(best_params)
+    best_params = params
+end
 
+Flux.loadparams!(model, best_params);
 
 # Visualization
 plot(epochs, loss_on_train, lab="Training", c=:black, lw=2);
@@ -58,10 +67,8 @@ yaxis!("Loss", :log);
 xaxis!("Training epoch");
 savefig("conv_loss");
 
-plot(epochs, acc, lab="Training", c=:black, lw=2, ylims = (0,1));
+plot(epochs, acc, lab="Accuracy", c=:green, lw=2, ylims = (0,1));
 title!("Convolutional architecture");
 yaxis!("Accuracy", :log);
 xaxis!("Training epoch");
 savefig("conv_accuracy");
-
-
