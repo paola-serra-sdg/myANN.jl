@@ -28,7 +28,7 @@ The architectures that we have decided to use are:
 - Dense neural network
 - Convolutional neural network
 
-We have also implemented a recurrent neural network with a sinusoid function as an example.
+We have also implemented a recurrent neural network using a sinusoidal function as an example.
 
 **Visualization**
 
