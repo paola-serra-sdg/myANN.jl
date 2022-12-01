@@ -28,6 +28,8 @@ The architectures that we have decided to use are:
 - Dense neural network
 - Convolutional neural network
 
+We have also implemented a recurrent neural network with a sinusoid function as an example.
+
 **Visualization**
 
 After training, we have plotted the loss function (with train and test data) and the accuracy (that we have implemented [here](./src/metrics.jl))
