@@ -50,7 +50,7 @@ for epoch in 1:30
     push!(acc, accuracy(y_test, model(x_test)))
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
-            best_params = Flux.params(model)
+            best_params = params
         end
     end
 end
