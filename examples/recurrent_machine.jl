@@ -1,6 +1,7 @@
 using Flux
 using Statistics: mean
 using Plots
+using ParametricMachinesDemos
 
 function my_loss(x, y)
     Flux.Losses.mse(x, y)
