@@ -15,6 +15,7 @@
 - [x] Make get_data more usable in general (changing the repository parameters)
 - [x] Change accuracy to work with more than 2 labels
 - [x] Tests for accuracy (and something else?)
+- [x] Create some examples with parametric machines (https://github.com/LimenResearch/ParametricMachinesDemos.jl)
 
 
 
