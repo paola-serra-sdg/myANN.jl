@@ -6,6 +6,7 @@ using Flux.Data: DataLoader
 using myANN
 using Plots
 using Random
+using ParametricMachinesDemos
 
 # Get our data
 images, labels = get_data("preprocessed_data");
@@ -16,6 +17,7 @@ x_train, y_train, x_test, y_test = split_train_test(images, labels);
 # Loading
 train_data = DataLoader((x_train, y_train); batchsize = 32, shuffle = true);
 test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
+
 
 # Dense architecture model
 model = Chain(
