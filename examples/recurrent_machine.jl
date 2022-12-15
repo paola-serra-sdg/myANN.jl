@@ -4,7 +4,7 @@ using Plots
 using ParametricMachinesDemos
 
 function my_loss(x, y)
-    Flux.Losses.mse(x, y)
+    Flux.Losses.mse(model(x), y)
 end
 
 # Sinusoidal data
@@ -23,7 +23,7 @@ end
 # To Float32 
 x = Float32.(x);
 
-dimensions = [300,200,200,200];
+dimensions = [1, 4, 4, 4];
 
 machine = RecurMachine(dimensions, sigmoid; pad=3, timeblock=5)
 
@@ -37,13 +37,14 @@ epochs = Float64[]
 l = Float64[]
 
 # Training 
-for i in 1:5
-    gs = gradient(ps) do
-        loss(x, y)
+for i in 1:1000
+    gs = gradient(params) do
+        my_loss(x, y) 
     end
-    Flux.Optimise.update!(opt, ps, gs)
-    if i % 1 == 0
-        # @show loss(x, y)
+    @show sum(first(gs))
+    Flux.Optimise.update!(opt, params, gs)
+    if i % 100 == 0
+        @show my_loss(x, y)
         push!(epochs, i)
         push!(l, loss(x, y))
     end

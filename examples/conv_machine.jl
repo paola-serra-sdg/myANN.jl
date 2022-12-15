@@ -13,57 +13,75 @@ images, labels = get_data("preprocessed_data");
 
 # Train and test splitting
 x_train, y_train, x_test, y_test = split_train_test(images, labels);
-x1 = x_train[:,:,:,1:200]
-y1 = y_train[:,1:200]
-x2 = x_test[:,:,:,1:50]
-y2 = y_test[:,1:50]
 
-dimensions = [300,200,200,200];
+# Loading
+train_data = DataLoader((x_train, y_train); batchsize = 32, shuffle = true);
+test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
+
+
+dimensions = [4,4,4,4];
 
 # Define the parametric machine
 
 machine = ConvMachine(dimensions, sigmoid; pad=(0,0,0,0))
 
-model = Flux.Chain(machine, flatten, Dense(810000,3), softmax) |> f64 
+model = Flux.Chain(machine, flatten, Dense(14400,3)) |> f64 
 
-ps = Flux.params(model)
-opt = ADAM(0.1)
+model = cpu(model)
+
+params = Flux.params(model)
+
+optimiser = ADAM(0.01)
 loss(x,y) = logitcrossentropy(model(x), y)
 
-# check that learning happens correctly
+# Training and plotting
 epochs = Int64[]
-loss_train = Float64[]
-loss_test = Float64[]
+loss_on_train = Float64[]
+loss_on_test = Float64[]
 acc = Float64[]
+best_params = Float32[]
 
-for i in 1:3
-    gs = gradient(ps) do
-        loss(x1, y1)
-    end
-    Flux.Optimise.update!(opt, ps, gs)
-    if i % 1 == 0
-        # @show loss(x_train, y_train)
-        # @show loss(x_test, y_test)
-        push!(epochs, i)
-        push!(loss_train, loss(x1, y1))
-        push!(loss_test, loss(x2, y2))
-        push!(acc, accuracy(y2, model(x2)))
+for epoch in 1:10
+    Flux.train!(loss, params, train_data, optimiser)
+    # gs = gradient(params) do
+    #     loss(x_train[:,:,:,1], y_train[:,1])
+    # end
+    # @show sum(first(gs))  NON VA QUESTO COMMENTO
+    
+    push!(epochs, epoch)
+    push!(loss_on_train, loss(x_train, y_train))
+    push!(loss_on_test, loss(x_test, y_test))
+    push!(acc, accuracy(y_test, model(x_test)))
+    @show loss(x_train, y_train)
+    @show loss(x_test, y_test)
+    if epoch > 1
+        if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
+            best_params = params
+        end
     end
 end
 
-plot(epochs, loss_train, lab="Training", c=:black, lw=2, ylims = (0,2));
-plot!(epochs, loss_test, lab="Test", c=:green, lw=2, ylims = (0,2));
-title!("Conv parametric machine");
-yaxis!("Loss", :log);
+# Extract and add new trained parameters
+if isempty(best_params)
+    best_params = params
+end
+
+Flux.loadparams!(model, best_params);
+
+
+# Visualization
+plot(epochs, loss_on_train, lab="Training", c=:black, lw=2, ylims = (0,2));
+plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,2));
+title!("Conv parametric machine architecture");
+yaxis!("Loss");
 xaxis!("Training epoch");
-savefig("conv_PM.png");
+savefig("convPM_loss.png");
 
 plot(epochs, acc, lab="Training", c=:black, lw=2, ylims = (0,1));
 title!("Conv parametric machine architecture");
-yaxis!("Accuracy", :log);
+yaxis!("Accuracy");
 xaxis!("Training epoch");
 savefig("convPM_accuracy.png");
-
 
 
 

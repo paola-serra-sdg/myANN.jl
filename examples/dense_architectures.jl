@@ -29,6 +29,7 @@ model = Chain(
         softmax
 )
 
+
 # Save our model on CPU
 model = cpu(model)
 
@@ -44,12 +45,18 @@ loss_on_test = Float64[]
 acc = Float64[]
 best_params = Float32[]
 
-for epoch in 1:30
+for epoch in 1:10
     Flux.train!(loss, params, train_data, optimiser)
+    gs = gradient(params) do
+        loss(x_train[:,:,:,1], y_train[:,1])
+    end
+    @show sum(first(gs))
+    
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
+    @show loss_on_train
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
             best_params = params

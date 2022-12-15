@@ -45,6 +45,6 @@ end
 # Visualization
 plot(epochs, l, lab="Loss", c=:green, lw=2);
 title!("Recurrent architecture");
-yaxis!("Loss", :log);
+yaxis!("Loss");
 xaxis!("Training epoch");
 savefig("recurrent_loss");
