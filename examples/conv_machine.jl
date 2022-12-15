@@ -18,7 +18,7 @@ x_train, y_train, x_test, y_test = split_train_test(images, labels);
 train_data = DataLoader((x_train, y_train); batchsize = 32, shuffle = true);
 test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
 
-
+# Dimensions represent the channel in input and output of each layer in the machine
 dimensions = [4,4,4,4];
 
 # Define the parametric machine

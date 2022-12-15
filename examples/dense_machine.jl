@@ -18,12 +18,20 @@ x_train, y_train, x_test, y_test = split_train_test(images, labels);
 train_data = DataLoader((x_train, y_train); batchsize = 32, shuffle = true);
 test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
 
+# Dimensions
+# Input: input size of the machine, Output: output size of the machine that corresponds to the SUM of the dimensions (the output space 
+# includes all previous spaces)
+
+# For example, I try to start with a Dense layer with output size 32 in my chain (= input size of the machine) and the machine output size is 32+16+8
 dimensions = [32,16,8];
 
 # Define the parametric machine
 machine = DenseMachine(dimensions, sigmoid);
 
-model = Flux.Chain(flatten,Dense(900, 32), machine, Dense(sum(dimensions), 3)) |> f64;
+# This machine corresponds to: chain(Dense(32,16), Dense(16,8)) but the output size is not 8! 
+
+
+model = Flux.Chain(flatten, Dense(900, 32), machine, Dense(sum(dimensions), 3)) |> f64;
 
 
 # Save our model on CPU

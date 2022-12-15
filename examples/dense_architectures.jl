@@ -25,8 +25,7 @@ model = Chain(
         Dense(900, 128, relu),
         Dense(128, 64, relu),
         Dense(64, 32, relu),
-        Dense(32, 3),
-        softmax
+        Dense(32, 3)
 )
 
 
@@ -47,16 +46,12 @@ best_params = Float32[]
 
 for epoch in 1:10
     Flux.train!(loss, params, train_data, optimiser)
-    gs = gradient(params) do
-        loss(x_train[:,:,:,1], y_train[:,1])
-    end
-    @show sum(first(gs))
-    
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
-    @show loss_on_train
+    @show loss(x_train, y_train)
+    @show loss(x_test, y_test)
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
             best_params = params
@@ -76,12 +71,12 @@ Flux.loadparams!(model, best_params);
 plot(epochs, loss_on_train, lab="Training", c=:black, lw=2, ylims = (0,2));
 plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,2));
 title!("Dense architecture");
-yaxis!("Loss", :log);
+yaxis!("Loss");
 xaxis!("Training epoch");
 savefig("dense_loss.png");
 
 plot(epochs, acc, lab="Training", c=:black, lw=2, ylims = (0,1));
 title!("Dense architecture");
-yaxis!("Accuracy", :log);
+yaxis!("Accuracy");
 xaxis!("Training epoch");
 savefig("dense_accuracy.png");

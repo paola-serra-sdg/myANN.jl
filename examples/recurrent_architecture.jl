@@ -2,10 +2,6 @@ using Flux
 using Statistics: mean
 using Plots
 
-function my_loss(x, y)
-    Flux.Losses.mse(x, y)
-end
-
 # Sinusoidal data
 t = -pi:0.1:pi;
 
@@ -22,28 +18,43 @@ end
 # To Float32 
 x = Float32.(x);
 
+train_data = DataLoader((x, y); batchsize = 32, shuffle = true);
+
 model = Chain(RNN(63, 32), Dense(32, 63));
 
-opt = ADAM(0.1);
+optimiser = ADAM(0.1);
 
 params = Flux.params(model);
 
-epochs = Float64[]
-l = Float64[]
+loss(x, y) = Flux.Losses.mse(model(x), y)
 
-# Training 
-for epoch in 1:50
-    Flux.reset!(model)
-    gs = gradient(params) do 
-        my_loss(model(x), y)  
-    end
+epochs = Int64[]
+loss_on_train = Float64[]
+loss_on_test = Float64[]
+acc = Float64[]
+best_params = Float32[]
+
+for epoch in 1:20
+    Flux.train!(loss, params, train_data, optimiser)
     push!(epochs, epoch)
-    push!(l, my_loss(model(x), y))
-    Flux.update!(opt, params, gs)
+    push!(loss_on_train, loss(x, y))
+    @show loss(x, y)
+    if epoch > 1
+        if is_best(loss_on_train[epoch-1], loss_on_train[epoch])
+            best_params = params
+        end
+    end
 end
 
+# Extract and add new trained parameters
+if isempty(best_params)
+    best_params = params
+end
+
+Flux.loadparams!(model, best_params);
+
 # Visualization
-plot(epochs, l, lab="Loss", c=:green, lw=2);
+plot(epochs, loss_on_train, lab="Training", c=:black, lw=2);
 title!("Recurrent architecture");
 yaxis!("Loss");
 xaxis!("Training epoch");

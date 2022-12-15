@@ -21,8 +21,7 @@ model = Chain(
         Conv((3, 3), 1=>8, pad=(1,1), relu),
         MaxPool((2,2)),
         flatten,
-        Dense(1800, 3),
-        softmax)
+        Dense(1800, 3))
 
 # Save our model on CPU
 model = cpu(model)
@@ -45,6 +44,8 @@ for epoch in 1:20
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
+    @show loss(x_train, y_train)
+    @show loss(x_test, y_test)
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
             best_params = params
@@ -63,12 +64,12 @@ Flux.loadparams!(model, best_params);
 plot(epochs, loss_on_train, lab="Training", c=:black, lw=2);
 plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2);
 title!("Convolutional architecture");
-yaxis!("Loss", :log);
+yaxis!("Loss");
 xaxis!("Training epoch");
 savefig("conv_loss");
 
 plot(epochs, acc, lab="Accuracy", c=:green, lw=2, ylims = (0,1));
 title!("Convolutional architecture");
-yaxis!("Accuracy", :log);
+yaxis!("Accuracy");
 xaxis!("Training epoch");
 savefig("conv_accuracy");
