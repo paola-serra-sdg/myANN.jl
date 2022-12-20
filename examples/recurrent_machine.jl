@@ -42,10 +42,22 @@ acc = Float64[]
 best_params = Float32[]
 
 for epoch in 1:20
+
+    # Train
     Flux.train!(loss, params, train_data, optimiser)
+
+    # Show the sum of the gradients
+    gs = gradient(params) do
+        loss(x, y)
+    end
+    @show sum(first(gs))
+
+    # Saving loss for visualization
     push!(epochs, epoch)
     push!(loss_on_train, loss(x, y))
     @show loss(x, y)
+
+    # Saving the best parameters
     if epoch > 1
         if is_best(loss_on_train[epoch-1], loss_on_train[epoch])
             best_params = params

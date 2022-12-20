@@ -22,16 +22,17 @@ test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
 dimensions = [4,4,4,4];
 
 # Define the parametric machine
-
 machine = ConvMachine(dimensions, sigmoid; pad=(0,0,0,0))
 
+# Model
 model = Flux.Chain(machine, flatten, Dense(14400,3)) |> f64 
-
 model = cpu(model)
 
+# Parameters
 params = Flux.params(model)
 
 optimiser = ADAM(0.01)
+
 loss(x,y) = logitcrossentropy(model(x), y)
 
 # Training and plotting
@@ -42,18 +43,25 @@ acc = Float64[]
 best_params = Float32[]
 
 for epoch in 1:10
+
+    # Train
     Flux.train!(loss, params, train_data, optimiser)
-    # gs = gradient(params) do
-    #     loss(x_train[:,:,:,1], y_train[:,1])
-    # end
-    # @show sum(first(gs))  NON VA QUESTO COMMENTO
+
+    # Show the sum of the gradients
+    gs = gradient(params) do
+        loss(x_train, y_train)
+    end
+    @show sum(first(gs))
     
+    # Saving losses and accuracies for visualization
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
     @show loss(x_train, y_train)
     @show loss(x_test, y_test)
+
+    # Saving the best parameters
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
             best_params = params

@@ -29,17 +29,15 @@ dimensions = [32,16,8];
 machine = DenseMachine(dimensions, sigmoid);
 
 # This machine corresponds to: chain(Dense(32,16), Dense(16,8)) but the output size is not 8! 
-
-
 model = Flux.Chain(flatten, Dense(900, 32), machine, Dense(sum(dimensions), 3)) |> f64;
-
 
 # Save our model on CPU
 model = cpu(model)
 
 params = Flux.params(model)
 
-optimiser = ADAM(0.005)
+optimiser = ADAM(0.01)
+
 loss(x,y) = logitcrossentropy(model(x), y)
 
 # Training and plotting
@@ -50,17 +48,25 @@ acc = Float64[]
 best_params = Float32[]
 
 for epoch in 1:10
+
+    # Train
     Flux.train!(loss, params, train_data, optimiser)
+
+    # Show sum of the gradients
     gs = gradient(params) do
         loss(x_train[:,:,:,1], y_train[:,1])
     end
     @show sum(first(gs))
-    
+
+    # Saving losses and accuracies for images
     push!(epochs, epoch)
     push!(loss_on_train, loss(x_train, y_train))
     push!(loss_on_test, loss(x_test, y_test))
     push!(acc, accuracy(y_test, model(x_test)))
-    @show loss_on_train
+    @show loss(x_train, y_train)
+    @show loss(x_test, y_test)
+
+    # Saving the best parameters
     if epoch > 1
         if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
             best_params = params
