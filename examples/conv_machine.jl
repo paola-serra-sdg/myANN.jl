@@ -7,6 +7,7 @@ using myANN
 using Plots
 using Random
 using ParametricMachinesDemos
+using LinearAlgebra
 
 # Get our data
 images, labels = get_data("preprocessed_data");
@@ -19,13 +20,24 @@ train_data = DataLoader((x_train, y_train); batchsize = 32, shuffle = true);
 test_data = DataLoader((x_test, y_test); batchsize = 32, shuffle = true);
 
 # Dimensions represent the channel in input and output of each layer in the machine
-dimensions = [4,4,4,4];
+dimensions = [2,2,2,2];
 
 # Define the parametric machine
 machine = ConvMachine(dimensions, sigmoid; pad=(0,0,0,0))
 
 # Model
-model = Flux.Chain(machine, flatten, Dense(14400,3)) |> f64 
+# model = Flux.Chain(Conv((1,), 1 => 8), machine, flatten, Dense(14400,3)) |> f64 # aggiugnere conv per diminuire numero di parametri
+# model = cpu(model)
+
+# Trying to access all layers
+
+v = rand(30, 30, 1, 1)
+
+model1 = Flux.Chain(Conv((16,16), 1 => 4), Conv((8,8), 4 => 8), machine, flatten)
+
+f_size = size(model1(v))[1]
+
+model = Flux.Chain(Conv((16,16), 1 => 4), Conv((8,8), 4 => 8), machine, flatten, Dense(f_size, 256), Dense(256, 3))
 model = cpu(model)
 
 # Parameters
@@ -51,7 +63,8 @@ for epoch in 1:10
     gs = gradient(params) do
         loss(x_train, y_train)
     end
-    @show sum(first(gs))
+    #@show sum(first(gs))
+    @show [norm(g,2) for g in gs] # gradient's norm
     
     # Saving losses and accuracies for visualization
     push!(epochs, epoch)
