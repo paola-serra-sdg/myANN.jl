@@ -1,6 +1,7 @@
 using Flux
 using Statistics: mean
 using Plots
+using Flux.Data: DataLoader
 
 # Sinusoidal data
 t = -pi:0.1:pi;

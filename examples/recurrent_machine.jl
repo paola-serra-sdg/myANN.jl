@@ -2,6 +2,7 @@ using Flux
 using Statistics: mean
 using Plots
 using ParametricMachinesDemos
+using Flux.Data: DataLoader
 
 
 # Sinusoidal data
