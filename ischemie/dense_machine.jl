@@ -2,18 +2,16 @@ using DelimitedFiles
 using Flux
 using Flux: @epochs, onehotbatch, onecold, logitcrossentropy, train!, throttle, flatten
 using Statistics: mean, std
-using Images
 using Flux.Data: DataLoader
 using myANN
 using Plots
-using Random
 using ParametricMachinesDemos
 
 
 train = readdlm("ischemie/data/ECG200_TRAIN.txt")
 test = readdlm("ischemie/data/ECG200_TEST.txt")
 
-y_train = train[:, 1]
+y_train = train[:,1]
 y_test = test[:,1]
 y_train = onehotbatch(y_train, (-1,1))
 y_test = onehotbatch(y_test, (-1,1))
@@ -38,7 +36,7 @@ model = cpu(model)
 # Parameters
 params = Flux.params(model)
 
-optimiser = ADAM(0.01)
+optimiser = ADAM(0.05)
 
 loss(x,y) = logitcrossentropy(model(x), y)
 
@@ -50,16 +48,11 @@ acc_train = Float64[]
 acc_test = Float64[]
 best_params = Float32[]
 
-for epoch in 1:200
+for epoch in 1:1000
 
     # Train
     Flux.train!(loss, params, train_data, optimiser)
 
-    # Show the sum of the gradients
-    gs = gradient(params) do
-        loss(x_train, y_train)
-    end
-    @show [norm(g,2) for g in gs] # gradient's norm
     
     # Saving losses and accuracies for visualization
     push!(epochs, epoch)
@@ -71,14 +64,13 @@ for epoch in 1:200
     @show loss(x_test, y_test)
 
     # Saving the best parameters
-    if epoch > 1
-        if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
-            best_params = params
-        end
-    end
+    # if epoch > 1
+    #     if is_best(loss_on_test[epoch-1], loss_on_test[epoch])
+    #         best_params = params
+    #     end
+    # end
 end
 
-@show maximum(acc_train)
 @show maximum(acc_test)
 
 # Extract and add new trained parameters
@@ -90,16 +82,16 @@ Flux.loadparams!(model, best_params);
 
 
 # Visualization
-# plot(epochs, loss_on_train, lab="Training", c=:black, lw=2, ylims = (0,20));
-# plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,20));
-# title!("Ischemie - dense machine");
-# yaxis!("Loss");
-# xaxis!("Training epoch");
-# savefig("ischemie_dense_loss.png");
+plot(epochs, loss_on_train, lab="Training", c=:black, lw=2, ylims = (0,5));
+plot!(epochs, loss_on_test, lab="Test", c=:green, lw=2, ylims = (0,5));
+title!("Ischemie - dense machine");
+yaxis!("Loss");
+xaxis!("Training epoch");
+savefig("ischemie_dense_loss.png");
 
-# plot(epochs, acc_train, lab="Training", c=:black, lw=2, ylims = (0,1));
-# plot!(epochs, acc_test, lab="Test", c=:green, lw=2, ylims = (0,1));
-# title!("Ischemie - dense machine");
-# yaxis!("Accuracy");
-# xaxis!("Training epoch");
-# savefig("ischemie_dense_accuracy.png");
+plot(epochs, acc_train, lab="Training", c=:black, lw=2, ylims = (0,1));
+plot!(epochs, acc_test, lab="Test", c=:green, lw=2, ylims = (0,1));
+title!("Ischemie - dense machine");
+yaxis!("Accuracy");
+xaxis!("Training epoch");
+savefig("ischemie_dense_accuracy.png");

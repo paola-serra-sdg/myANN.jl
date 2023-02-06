@@ -67,11 +67,6 @@ for epoch in 1:500
     # Train
     Flux.train!(loss, params, train_data, optimiser)
 
-    # Show the sum of the gradients
-    gs = gradient(params) do
-        loss(x_train, y_train)
-    end
-    @show [norm(g,2) for g in gs] # gradient's norm
     
     # Saving losses and accuracies for visualization
     push!(epochs, epoch)
